@@ -32,15 +32,16 @@ void uniq(int fd, int count, int duplicate, int nodifcase){
         elemc1++;//keep templine index starts from 0
       }
       else{ //init when reach newline
+          templine[elemc1++] = buf[i1];//elemc1 increment for \n
           if (strcmp(templine, currline) != 0){ //if they r't equal
             for (i2 = 0; i2 < elemc1; i2++){
               currline[i2] = templine[i2];
-              elemc2++;//count uniq line length without \n, when uniq line is found
+              elemc2++;//count uniq line length when uniq line is found
+
             }
             i5++;//count groupings
-            elemc2++;//to add \n
-            i4 = elemc3-6;//buffer "pointer"
-            for (i3 = (elemc2-elemc1-1); i3 < elemc2; i3++){
+            i4 = elemc3-elemc1;//buffer "pointer"
+            for (i3 = (elemc2-elemc1); i3 < elemc2; i3++){
               outputline[i3] = buf[i4];
               i4++;
             }
@@ -48,7 +49,6 @@ void uniq(int fd, int count, int duplicate, int nodifcase){
           else{
             group[i5]++;//increment when two strings are the same
           }
-
         elemc1 = 0; //the element counter here is to make sure every new reading stream into templine starts from [0]
       }//most outer else
     }//most outer for loop

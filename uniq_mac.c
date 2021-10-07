@@ -1,8 +1,14 @@
-#include "types.h"
-#include "stat.h"
-#include "user.h"
+#include <stdio.h>
+#include <fcntl.h> //for open
+#include <unistd.h> //for close
 
 char buf[1024], templine[512], currline[512], outputline[1024];
+
+int strcmp(const char *p, const char *q) {
+  while (*p && *p == *q)
+    p++, q++;
+  return (unsigned char)*p - (unsigned char)*q;
+}
 
 char to_lower(char chr){
   if ( chr >= 65 && chr <= 90 && chr != '\n')
@@ -57,9 +63,9 @@ void uniq(int fd, int count, int duplicate, int nodifcase){
 int line = 0, i, j = 0, newlinec2 = 0, newlinec1 = 0;
   if (count){
     for (i = 0; i < i5+1; i++){
-      printf(1,"%d%c",group[i],' ' );
+      printf("%d%c",group[i],' ' );
       for(;;line++){
-        printf(1,"%c", outputline[line]);
+        printf("%c", outputline[line]);
         if (outputline[line] == '\n'){
           line++;
           break;
@@ -76,10 +82,10 @@ int line = 0, i, j = 0, newlinec2 = 0, newlinec1 = 0;
             newlinec2++;
           }
           if (newlinec2 == newlinec1-1 && outputline[j] != '\n'){
-            printf(1,"%c", outputline[j]);
+            printf("%c", outputline[j]);
           }
           else if (newlinec2 > newlinec1){
-            printf(1,"\n");
+            printf("\n");
             j++;
             break;
           }
@@ -89,7 +95,7 @@ int line = 0, i, j = 0, newlinec2 = 0, newlinec1 = 0;
   }//else if
   else{//default uniq printing
     for(i = 0; i < elemc2 ; i++){
-      printf(1,"%c", outputline[i]);
+      printf("%c", outputline[i]);
     }//for
   }//else
 }//void
@@ -106,7 +112,7 @@ int main(int argc, char *argv[]){
     uniq(0, 0, 0, 0); //uniq is the only one argumt
             //the 0 is standard input for file descriptor, the std-I connect to std-O
             //std-O in this case is the result from cat README.md
-    exit();
+    return 0;
   }else{
     while((++argv)[0] && argv[0][0] == '-'){//probably should use getopt() instead of this
     while((c = *++argv[0])){
@@ -124,25 +130,25 @@ int main(int argc, char *argv[]){
         break;
 
         default:
-         printf(1,"%s%c%s\n","Option ", c, " is unknown." );
-         printf(1,"%s\n", "Usage: uniq <-c -d -i>");
+         printf("%s%c%s\n","Option ", c, " is unknown." );
+         printf("%s\n", "Usage: uniq <-c -d -i>");
         break;
       }//switch
     }//inner while
   }//outer while
   if (duplicate == 1 && count == 1){
-    printf(1,"invalid usage.\n");
-    printf(1,"usage: uniq [-c | -d] [-i]\n");
-    exit();
+    printf("invalid usage.\n");
+    printf("usage: uniq [-c | -d] [-i]\n");
+    return 0;
   }
-  if ((fd = open(argv[0], 0)) < 0){ // O_RDONLY = 0
+  if ((fd = open(argv[0], O_RDONLY)) < 0){ // O_RDONLY = 0
       //open() establishes a connection between file descriptor and the file
       //int open(const char *path, int oflag, ... );
       //the path pointer points to a pathname naming the file
-      printf(1,"uniq: cannot open %s\n", argv[0]);
+      printf("uniq: cannot open %s\n", argv[0]);
     }
     uniq(fd, count, duplicate, nodifcase);
     close(fd);
   }//else
-  exit();
+  return 0;
 }//main

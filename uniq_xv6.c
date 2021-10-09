@@ -14,7 +14,7 @@ void uniq(int fd, int count, int duplicate, int nodifcase){
   int readchr, i1, i2, i3, i4, i5 = -1;
   //i5 declare to -1 because the group array index should not increment when templine compares with empty currline(only once)
   int elemc1, elemc2, elemc3, group[100] = {[0 ... 99] = 1};
-  //group array is to store grouping elements, every line exist at least once, thus contains 100's 1s.//bc my course's xv6 has page size limit 4kb & only assign 1 acceable page 
+  //group array is to store grouping elements, every line exist at least once, thus contains 100's 1s.//bc my course's xv6 has page size limit 4kb & only assign 1 acceable page
   elemc1 = 0;
   elemc2 = 0;
   elemc3 = 0;
@@ -78,7 +78,7 @@ int line = 0, i, j = 0, newlinec2 = 0, newlinec1 = 0;
           if (newlinec2 == newlinec1-1 && outputline[j] != '\n'){
             printf(1,"%c", outputline[j]);
           }
-          else if (newlinec2 > newlinec1){
+          else if (newlinec2 == newlinec1){
             printf(1,"\n");
             j++;
             break;

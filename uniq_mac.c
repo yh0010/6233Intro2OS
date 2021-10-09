@@ -84,7 +84,7 @@ int line = 0, i, j = 0, newlinec2 = 0, newlinec1 = 0;
           if (newlinec2 == newlinec1-1 && outputline[j] != '\n'){
             printf("%c", outputline[j]);
           }
-          else if (newlinec2 > newlinec1){
+          else if (newlinec2 == newlinec1){
             printf("\n");
             j++;
             break;

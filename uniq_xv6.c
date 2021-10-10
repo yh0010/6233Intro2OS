@@ -13,8 +13,8 @@ char to_lower(char chr){
 void uniq(int fd, int count, int duplicate, int nodifcase){
   int readchr, i1, i2, i3, i4, i5 = -1;
   //i5 declare to -1 because the group array index should not increment when templine compares with empty currline(only once)
-  int elemc1, elemc2, elemc3, group[100] = {[0 ... 99] = 1};
-  //group array is to store grouping elements, every line exist at least once, thus contains 100's 1s.//bc my course's xv6 has page size limit 4kb & only assign 1 acceable page
+  int elemc1, elemc2, elemc3, elemc4, group[100] = {[0 ... 99] = 1};
+  //group array is to store grouping elements, every line exist at least once, thus contains 100's 1s.
   elemc1 = 0;
   elemc2 = 0;
   elemc3 = 0;
@@ -22,7 +22,7 @@ void uniq(int fd, int count, int duplicate, int nodifcase){
   while ((readchr = read(fd, buf, sizeof(buf))) > 0){
     for (i1 = 0; i1 < readchr; i1++){
       elemc3++;//track characters
-      if (buf[i1] != '\n'){
+      if (buf[i1] != '\n' && elemc3 != readchr){ //2nd condition to deal no newline character at the end of file
         if (nodifcase){
           templine[elemc1] = to_lower(buf[i1]);
         }
@@ -32,12 +32,14 @@ void uniq(int fd, int count, int duplicate, int nodifcase){
         elemc1++;//keep templine index starts from 0
       }
       else{ //init when reach newline
+
           templine[elemc1++] = buf[i1];//elemc1 increment for \n
           if (strcmp(templine, currline) != 0){ //if they r't equal
+            elemc4 = 0;// specifically use for last line without \n character, to count length & use for later printing
             for (i2 = 0; i2 < elemc1; i2++){
               currline[i2] = templine[i2];
-              elemc2++;//count uniq line length when uniq line is found
-
+              elemc2++;//count uniq line total characters when uniq line is found
+              elemc4++;
             }
             i5++;//count groupings
             i4 = elemc3-elemc1;//buffer "pointer"
@@ -53,10 +55,12 @@ void uniq(int fd, int count, int duplicate, int nodifcase){
       }//most outer else
     }//most outer for loop
 }//1st while loop
+int i6 = i5;//another break condition specifically for last line without \n
+i5++;//for the loop range
 
 int line = 0, i, j = 0, newlinec2 = 0, newlinec1 = 0;
   if (count){
-    for (i = 0; i < i5+1; i++){
+    for (i = 0; i < i5; i++){
       printf(1,"%d%c",group[i],' ' );
       for(;;line++){
         printf(1,"%c", outputline[line]);
@@ -64,11 +68,17 @@ int line = 0, i, j = 0, newlinec2 = 0, newlinec1 = 0;
           line++;
           break;
         }//if
+        if (i == i6 && elemc4 == 0){
+          break;
+        }
+        else if (i == i6){
+          elemc4--;
+        }
       }//2nd for
     }//1st for
   }//if
   else if (duplicate){
-    for (i = 0; i < i5+1; i++){
+    for (i = 0; i < i5; i++){
       newlinec1++;
       if (group[i] > 1){
         for (;;j++){

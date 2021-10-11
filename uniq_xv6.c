@@ -14,7 +14,7 @@ void uniq(int fd, int count, int duplicate, int nodifcase){
   int readchr, i1, i2, i3, i4, i5 = -1;
   //i5 declare to -1 because the group array index should not increment when templine compares with empty currline(only once)
   int elemc1, elemc2, elemc3, elemc4, group[100] = {[0 ... 99] = 1};
-  //group array is to store grouping elements, every line exist at least once, thus contains 100's 1s.
+  //group array is to store grouping elements, due to school's xv6 have ver low bound page size limit, thus this array only contains 100's 1s.
   elemc1 = 0;
   elemc2 = 0;
   elemc3 = 0;
